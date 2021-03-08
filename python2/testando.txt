@@ -1,0 +1,5 @@
+//Esse arquivo apresenta o modelo de saida esperado no programa.
+//Os resultados descritos sao referentes ao que foi apresentado no
+//arquivo de modelo de entrada.
+//C significa consoante; V significa volgal; N significa numeros
+
