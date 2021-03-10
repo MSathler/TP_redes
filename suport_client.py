@@ -6,8 +6,10 @@ from lib.output_doc import output_doc
 import _thread as thread
 import time
 
+global T
 
 def listen(c,ap,doc):
+        global T
         con = c.con
         data = []
         FIM = False
@@ -58,14 +60,14 @@ def listen(c,ap,doc):
                     print(msg)
                     doc.write_line(msg)
                 print('--------------------------')
-                FIM = True
+                # FIM = True
                 break
-            if FIM == True:
+            if st == b'CloseClient':
+                
                 break
             
             
-            
-
+        T = False
         print('Finalizando conexao do cliente')
         con.close()
         thread.exit()
@@ -79,19 +81,21 @@ if __name__ == '__main__':
     # msg_len = len(doc_msg.dictionary)
     # print('Document data parsed.')
 
+    T = True
+
     ap = word_parse()
 
     HOST = '127.0.0.1'     # Endereco IP do Servidor
-    PORT = 5001            # Porta que o Servidor esta
+    PORT = 5006            # Porta que o Servidor esta
     tcp = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     c = client(tcp,'')
     dest = (HOST, PORT)
     tcp.connect(dest)
     doc = None
     thread.start_new_thread(listen,tuple([c,ap,doc]))
+    print('Waiting Server Request')
 
-
-    while True:
+    while T == True:
         pass
   
 

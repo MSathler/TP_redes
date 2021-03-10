@@ -37,7 +37,7 @@ class client(object):
         else:
             self._msg_table.append(msg)
             for _ in range(int(self._package_len)-1):
-                self._msg_table.append(self._con.recv(1024))
+                self._msg_table.append(self._con.recv(1024).decode('utf-8'))
             # print(self._msg_table)    
             return self._msg_table, True
         

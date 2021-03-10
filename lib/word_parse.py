@@ -14,7 +14,7 @@ class word_parse(object):
                         self.cons += C 
                         self.number += N
                         self.backup += string
-                if self.backup == 'bn':
+                if self.backup == '':
                     return [('V = ' +str(self.vog) + '; C =' + str(self.cons)+ '; N ='+ str(self.number)),1]
 
                 return [('V = ' +str(self.vog) + '; C =' + str(self.cons)+ '; N ='+ str(self.number)),0]

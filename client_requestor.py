@@ -6,7 +6,7 @@ from lib.parse_document import parse_document
 from lib.tclient import client
 from lib.output_doc import output_doc
 
-
+global T
 
 # def msg_read(con):
 #     data = []
@@ -21,6 +21,7 @@ from lib.output_doc import output_doc
 
 
 def listen(c,ap,doc):
+        global T
         con = c.con
         data = []
         FIM = False
@@ -72,13 +73,14 @@ def listen(c,ap,doc):
                     print(msg)
                     doc.write_line(msg)
                 print('--------------------------')
-                FIM = True
+                # FIM = True
                 break
-            if FIM == True:
-                break
-            
-            
+            if st == b'CloseClient':
 
+                break
+            
+            
+        T = False
         print('Finalizando conexao do cliente')
         con.close()
         thread.exit()
@@ -93,10 +95,12 @@ if __name__ == '__main__':
     msg_len = len(doc_msg.dictionary)
     print('Document data parsed.')
 
+    T = True
+
     ap = word_parse()
 
     HOST = '127.0.0.1'     # Endereco IP do Servidor
-    PORT = 5001            # Porta que o Servidor esta
+    PORT = 5006            # Porta que o Servidor esta
     tcp = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     c = client(tcp,'')
     dest = (HOST, PORT)
@@ -110,13 +114,18 @@ if __name__ == '__main__':
     time.sleep(1/1.5)
     print('Send the following messages:')
     print('--------------------------')
+    
+
+
     for i in range(1,msg_len+1): 
+        # print((str(doc_msg.dictionary['k'+str(i)])+ '\n').encode('utf-8'))
+        # print((str(doc_msg.dictionary['k'+str(i)])+ '\n'))
         time.sleep(1/1.5)
         tcp.send((str(doc_msg.dictionary['k'+str(i)])+ '\n').encode('utf-8'))
         print(str(doc_msg.dictionary['k'+str(i)]))
     print('--------------------------')
 
-    while True:
+    while T == True:
         pass
 
     tcp.close()

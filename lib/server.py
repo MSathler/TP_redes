@@ -7,7 +7,7 @@ from .tclient import client
 
 class server(object):
 
-    def __init__(self,HOST = '', PORT = 5001):
+    def __init__(self,HOST = '', PORT = 5006):
         self.tcp = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.orig = (HOST, PORT)
         self.tcp.bind(self.orig)
@@ -15,6 +15,7 @@ class server(object):
         self.c_list = {}
         self.i = 0
         self.data = {}
+        self._END = False
         print('Server started!')
 
     def add_client(self,con,client):
@@ -61,8 +62,12 @@ class server(object):
         self.add_client(con,cliente)
         thread.start_new_thread(self.client_thread, tuple([con,cliente]))
 
+    @property
+    def END(self):
+        return self._END
 
     def client_thread(self,con,cliente):
+        END = False
         resp = False
         data = None
         print('Conectado por', cliente)
@@ -73,7 +78,7 @@ class server(object):
                 self.client_r(con,cliente)
                 msg = con.recv(1024)
                 if not msg: break
-                data, resp = c.msg(msg)
+                data, resp = c.msg(msg.decode('utf-8'))
                 if resp == True: start_msg = resp
                 # print cliente, msg
 
@@ -115,9 +120,17 @@ class server(object):
                 for i in range(len(cr_data)):
                     con_f.sendto((str(cr_data[i])).encode('utf-8'),client_f)
                     time.sleep(1/1.5)
+                END = True
 
+                break
+            if END == True:
+                for q in range(len(self.c_list)):
+                    Con,Client = self.c_list['k'+str(q+1)][0],self.c_list['k'+str(q+1)][1]
+                    Con.sendto(b'CloseClient',Client)
+                    Con.close()
+                    self._END = True
                 break
 
         print('Finalizando conexao do cliente', cliente)
-        con.close()
+        # con.close()
         thread.exit()
