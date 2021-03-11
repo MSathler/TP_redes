@@ -4,16 +4,20 @@ import random
 import time
 # from tclient import client
 from .tclient import client
+from lib.protocol import m_protocol
 
 class server(object):
 
-    def __init__(self,HOST = '', PORT = 5006):
+    def __init__(self,HOST = '127.0.0.1', PORT = 5009):
         self.tcp = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.orig = (HOST, PORT)
         self.tcp.bind(self.orig)
         self.tcp.listen(2)
+        self.host = HOST
+        self.port = PORT
         self.c_list = {}
         self.i = 0
+        self.p = m_protocol()
         self.data = {}
         self._END = False
         print('Server started!')
@@ -39,6 +43,7 @@ class server(object):
         time.sleep(1/1.5)
         con2.sendto((str(len(data))).encode('utf-8'),client_s)
         time.sleep(1/1.5)
+        print(len(data))
         for i in range(len(data)):
             con2.sendto((str(data[i])).encode('utf-8'),client_s)
             time.sleep(1/1.5)
@@ -61,6 +66,7 @@ class server(object):
         con, cliente = self.tcp.accept()
         self.add_client(con,cliente)
         thread.start_new_thread(self.client_thread, tuple([con,cliente]))
+        
 
     @property
     def END(self):
@@ -73,11 +79,11 @@ class server(object):
         print('Conectado por', cliente)
         c = client(con,cliente)
         while True:
+            
             start_msg = con.recv(1024)
             while start_msg == b"client_request\n":
                 self.client_r(con,cliente)
                 msg = con.recv(1024)
-                if not msg: break
                 data, resp = c.msg(msg.decode('utf-8'))
                 if resp == True: start_msg = resp
                 # print cliente, msg
@@ -89,48 +95,41 @@ class server(object):
                     print('--------------------------------------------------')
                     con2,client_s, client_key = self.client_chooser()
                     print('Sending the message to a client -> ' + str(client_s[1]) + ' <- to analyze the words.' )
-                    # print('--------------------------------------------------')
-                    # print(data)
-                    # print('--------------------------------------------------')
-                    self.server_send(con2,data,client_s,client_key)
+                    self.p.send_msg(con2,client_s,"server_request\n",len(data),data,client_key)
+                    # self.server_send(con2,data,client_s,client_key)
                     break
+
             while start_msg == b'client_response\n':
                 print('Receiving a parsed data:')
                 print('--------------------------')
-                cr_data = []
-                response_msg = con.recv(1024)
+                len_, cr_data, client_key, have_msg = self.p.receive_msg(con,True)
+                if have_msg == False: break
 
-                if not response_msg: break
+                print(cr_data)
 
-                len_t = response_msg.decode('utf-8')
-                for i in range(int(len_t)):
-                    response_msg = con.recv(1024)
-                    cr_data.append(response_msg)
-                    print(response_msg)
                 print('--------------------------')
-                response_msg = con.recv(1024)
-                client_key = response_msg
+
                 con_f,client_f = self.cliente_requisitor
                 print('Sending final message (above) to a Client Request -> ' + str(client_f[1]))
-                con_f.sendto(('server_fresponse\n').encode('utf-8'),client_f)
-                time.sleep(1/1.5)
-                con_f.sendto((str(len(cr_data))).encode('utf-8'),client_f)
-                time.sleep(1/1.5)
 
-                for i in range(len(cr_data)):
-                    con_f.sendto((str(cr_data[i])).encode('utf-8'),client_f)
-                    time.sleep(1/1.5)
-                END = True
 
-                break
-            if END == True:
-                for q in range(len(self.c_list)):
-                    Con,Client = self.c_list['k'+str(q+1)][0],self.c_list['k'+str(q+1)][1]
-                    Con.sendto(b'CloseClient',Client)
-                    Con.close()
-                    self._END = True
-                break
+                self.p.send_msg(con_f,client_f,"server_fresponse\n",len_,cr_data)
 
-        print('Finalizando conexao do cliente', cliente)
+                # self.p.close_p(self.c_list)
+                self.tcp.shutdown(socket.SHUT_RDWR)
+                self.tcp.close()
+                print(self.p.log)
+                thread.exit()
+            #         END = True
+            #         start_msg = None
+
+            #         break
+            # if END == True:
+                
+                
+                
+            #     break
+
+        # print('Finalizando conexao do cliente', cliente)
         # con.close()
         thread.exit()

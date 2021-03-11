@@ -36,7 +36,7 @@ This code was developed in Python3.6
 7- The server send a shutdown message to all clients and finish the execution.
 
 ### Client Requestor
-The program will read the document "modelo_entrada.txt" remove comment lines and parse the first element (a number), which will be a number of lines to send a server. (Obs: Client requestor is also a support client
+The program will read the document "modelo_entrada.txt" remove comment lines and parse the first element (a number), which will be a number of lines to send a server. (Obs: Client requestor is also a support client)
 
 ### Server
 The server will receive the data and send to a random client.

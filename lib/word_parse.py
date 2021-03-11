@@ -3,7 +3,7 @@ class word_parse(object):
     def parse(self,line):
         self.reset()
         self.a = ""
-        read = line.decode('utf-8').split('\n')
+        read = line.split('\n')
         if read[0] == '':
             return False
         else:

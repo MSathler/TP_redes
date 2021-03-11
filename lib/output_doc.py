@@ -8,7 +8,9 @@ class output_doc(object):
 
     def write_line(self,msg):
         with open(self._doc_name,'a') as f:
-            f.writelines(msg + '\n')
+            for i in range(len(msg)):
+                f.writelines(msg[i] + '\n')
+                print(msg[i])
             f.close()
             # if int(error) == 1:
             #     f.writelines("error\n")    
