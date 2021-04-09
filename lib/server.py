@@ -90,8 +90,10 @@ class server(object):
                     print('Received message for a Client Request -> ' +
                           str(cliente[1]))
                     print('--------------------------------------------------')
-                    print(data)
+                    for _ in range(len(data)):
+                        print(data[_])                 
                     print('--------------------------------------------------')
+                    
                     con2, client_s, client_key = self.client_chooser() # Choose randomly one client in the client dictionary
                     print('Sending the message to a client -> ' +
                           str(client_s[1]) + ' <- to analyze the words.')
@@ -109,8 +111,8 @@ class server(object):
                 if have_msg == False:
                     break
 
-                print(cr_data)                          # print table
-
+                for ia in range(int(len_)):
+                    print(cr_data[ia])                          # print table
                 print('--------------------------')
 
                 con_f, client_f = self.cliente_requisitor   # Recover the client requisitor information its important when have multiple clients
