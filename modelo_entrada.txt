@@ -3,14 +3,15 @@
 //nesse arquivo quaisquer linhas que iniciem com "//". isso e comentario
 
 //numero de operacoes a serem lidas
-5
+10
 
 //imediatamente as operações deverao ser lidas. Cada entrada devera ser inserida em uma linha distinta. 
 //duas entradas em uma única linha serao consideradas como entrada unica. Isso pode provocar um erro.
 
 abcmmmmmmmmmmmmmmmmm 667575
-j°k3
+j*sa7°k3sasdasdssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss
 d23  ee 2
 *-?
 asda
 asdaasa
+***

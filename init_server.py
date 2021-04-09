@@ -6,11 +6,11 @@ from lib.server import server
 __author__ = 'Maurício Souza Sathler'
 __license__ = 'MIT'
 
+
 if __name__ == '__main__':
-    s = server()
+    s = server()        # Initialize a server object with a default host and port
 
     while True:
-        s.routine()
-        
+        s.routine()     # Routine to colect new clients and create their threads
 
-    s.close()
+    s.close()           # close server
